@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createServer as createViteServer } from 'vite';
 import type { AgeGroup, QuestionAnswerInput, UserProfile } from './src/types/learnmatch.ts';
 import {
@@ -626,9 +627,13 @@ async function startServer() {
 }
 
 // Start only if executed directly (not when imported by test runner)
+const currentFilePath = path.resolve(fileURLToPath(import.meta.url));
+const entryFilePath = process.argv[1] ? path.resolve(process.argv[1]) : '';
 const isMainModule =
-  process.argv[1] &&
-  path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname);
+  Boolean(entryFilePath) &&
+  (process.platform === 'win32'
+    ? entryFilePath.toLowerCase() === currentFilePath.toLowerCase()
+    : entryFilePath === currentFilePath);
 
 if (isMainModule) {
   startServer().catch((err) => {
