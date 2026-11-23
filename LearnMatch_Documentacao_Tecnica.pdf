@@ -1,0 +1,507 @@
+%PDF-1.3
+%ºß¬à
+3 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 4 0 R
+>>
+endobj
+4 0 obj
+<<
+/Length 6197
+>>
+stream
+0.5670000000000001 w
+0 G
+0.06 0.09 0.16 rg
+0. 841.8899999999999864 595.2799999999999727 -96.3779527559055254 re
+f
+BT
+/F2 17.5 Tf
+20.125 TL
+1. g
+45.354330708661422 799.3703149606299121 Td
+(LearnMatch - Auditoria Tecnica e Relatorio Atualizado) Tj
+ET
+BT
+/F1 9.8 Tf
+11.2699999999999996 TL
+0.796 0.835 0.882 rg
+45.354330708661422 776.69314960629913 Td
+(Estabilizacao de Autenticacao, Cookies em Iframe, Integracao Gemini e Regressao) Tj
+ET
+BT
+/F1 9.8 Tf
+11.2699999999999996 TL
+0.796 0.835 0.882 rg
+45.354330708661422 759.6852755905511003 Td
+(Data de geracao: 23/11/2026, 22:04:01) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.114 0.306 0.847 rg
+45.354330708661422 717.1655905511811397 Td
+(1. Problema Prioritario e Correcoes Recentes) Tj
+ET
+0.89 0.91 0.94 RG
+45.354330708661422 711.4962992125983874 m
+549.9256692913385223 711.4962992125983874 l
+S
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 695.9057480314960458 Td
+(A. Sessao em Iframe Cross-Site \(Resolvido\): apos o registo, PUT /api/profile devolvia HTTP 401 porque) Tj
+T* (isHttpsRequest nao detetava HTTPS atras do proxy AI Studio. Implementado SameSite=None; Secure; Partitioned e) Tj
+T* (canal duplo com token Bearer em memoria React.) Tj
+ET
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 650.2679527559055259 Td
+(B. Pronuncia TTS com Frases Introdutorias \(Resolvido\): separado speechMetadata.style do texto falado exclusivo da) Tj
+T* (palavra inglesa em server/geminiService.ts com cache WAV versionada \(v2\).) Tj
+ET
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 617.6695275590550409 Td
+(C. Fim de Jogo a 0 Vidas e Recuperacao Independente \(Resolvido\): quando as vidas chegam a 0 durante uma) Tj
+T* (sessao, a sessao termina imediatamente com gravacao da tentativa parcial no historico; a recuperacao manual) Tj
+T* (instantanea foi substituida pelo Desafio de Recuperacao independente de 5 perguntas.) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.114 0.306 0.847 rg
+45.354330708661422 566.3624409448818824 Td
+(2. Sistema de Vidas, Fim de Jogo e Desafio de Recuperacao) Tj
+ET
+0.89 0.91 0.94 RG
+45.354330708661422 560.6931496062992437 m
+549.9256692913385223 560.6931496062992437 l
+S
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 545.1025984251969021 Td
+(- Fim de jogo imediato \(0 vidas\): em server/db.ts \(submitQuestionAnswer\), se nextLives atingir 0, a transacao SQLite) Tj
+T* (finaliza de imediato a tentativa parcial via finalizeBatchAttemptInTx \(ended_by_zero_lives = 1, preservando pontuacao) Tj
+T* (e respostas dadas ate ao momento\) e devolve { gameOver: true, attemptResult, user }. No frontend,) Tj
+T* (ExerciseSessionView bloqueia cliques/atalhos e App.tsx transita para ResultsView.) Tj
+ET
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 486.42543307086612 Td
+(- Bloqueio a 0 vidas: POST /api/exercises/generate \(HTTP 403\), POST /api/exercises/answer \(HTTP 403\) e os botoes) Tj
+T* (do Painel/Niveis/Resultados impedem iniciar ou continuar sessoes normais com 0 vidas, exibindo a mensagem) Tj
+T* (amigavel orientada a recuperacao.) Tj
+ET
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 440.7876377952755433 Td
+(- Desafio de Recuperacao \(POST /api/recovery/start e POST /api/recovery/submit\): gera 5 perguntas independentes a) Tj
+T* (partir de VISUAL_CATALOG \(alternando Audio -> Imagem e Imagem -> Palavra, sem chamadas desnecessarias a API) Tj
+T* (Gemini\). Regra estrita: >= 4/5 corretas concede +1 vida \(maxLives = 5\); <= 3/5 concede 0 vidas; erros no desafio nao) Tj
+T* (descontam vidas e nunca alteram pontos, desbloqueios de niveis, attempts ou word_performance.) Tj
+ET
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 382.110472440944875 Td
+(- Rota legada desativada e recuperacao automatica mantida: POST /api/profile/recover-life devolve HTTP 400 \(sem) Tj
+T* (restauracao direta\); a recuperacao automatica temporal de +1 vida a cada 15 minutos permanece ativa.) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.114 0.306 0.847 rg
+45.354330708661422 343.8427559055117513 Td
+(3. Verificacao da Pronuncia TTS \(5 Palavras Obrigatorias + Cache v2\)) Tj
+ET
+0.89 0.91 0.94 RG
+45.354330708661422 338.1734645669291126 m
+549.9256692913385223 338.1734645669291126 l
+S
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 322.5829133858267141 Td
+(Cada palavra foi validada em cache WAV RIFF v2 \(24kHz mono 16-bit\) e transcrita por gemini-3.5-transcribe) Tj
+T* (confirmando ausencia de frases adicionais:) Tj
+ET
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 289.9844881889763428 Td
+(- horse \(61.468 B\), apple \(65.308 B\), dog \(72.988 B\), banana \(72.988 B\), house \(69.148 B\) -> todas cache=hit na 2.a) Tj
+T* (chamada e transcricao exata da palavra.) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.114 0.306 0.847 rg
+45.354330708661422 251.7167716535432191 Td
+(4. Arquitetura, Seguranca e Funcionalidades Preservadas) Tj
+ET
+0.89 0.91 0.94 RG
+45.354330708661422 246.0474803149605805 m
+549.9256692913385223 246.0474803149605805 l
+S
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 230.4569291338582389 Td
+(Configuracao ativa: React 19 + TypeScript + Tailwind v4 + Express + SQLite \(data/learnmatch.db\) + Gemini API) Tj
+T* (\(/api/health -> geminiConfigured: true\).) Tj
+ET
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 197.8585039370078675 Td
+(Seguranca: transacoes BEGIN IMMEDIATE em SQLite previnem condicoes de corrida e dupla deducao/recompensa;) Tj
+T* (recovery_challenges valida propriedade por user_id \(HTTP 403 cross-user\) e estado ativo unico \(HTTP 409 em) Tj
+T* (reenvios duplicados\).) Tj
+ET
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 152.220708661417234 Td
+(Preservadas integralmente: Nivel 1 \(Audio -> Imagem\), Nivel 2 \(Imagem -> Palavra\), regra de aprovacao \(>= 6/10\),) Tj
+T* (desbloqueio de niveis, historico de tentativas, recomendacoes IA, treino focusWeakWords, atalhos de teclado \(1-4, R,) Tj
+T* (Enter\) e exportacao PDF.) Tj
+ET
+endstream
+endobj
+5 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 6 0 R
+>>
+endobj
+6 0 obj
+<<
+/Length 3024
+>>
+stream
+0.5670000000000001 w
+0.89 0.91 0.94 RG
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.114 0.306 0.847 rg
+45.354330708661422 790.8663779527558972 Td
+(5. Testes Executados \(25/25 PASS\)) Tj
+ET
+0.89 0.91 0.94 RG
+45.354330708661422 785.1970866141731449 m
+549.9256692913385223 785.1970866141731449 l
+S
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 769.6065354330708033 Td
+(Distincao transparente: testes executados via HTTP contra o servidor Express/SQLite isolado em scripts/run_tests.ts e) Tj
+T* (contra o servidor local em execucao; nao foi executado um navegador grafico externo \(Chromium/Playwright) Tj
+T* (indisponivel neste contentor\).) Tj
+ET
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 723.9687401574802834 Td
+(- Regressao Geral [REG-01..REG-07 PASS]: registo em iframe, reload via cookie HttpOnly, logout/login, conclusao) Tj
+T* (N1->N2, isolamento entre utilizadores, fallback/focusWeakWords e cache WAV v2.) Tj
+ET
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 691.3703149606299121 Td
+(- Perda de Vidas [TESTE-01..TESTE-08 PASS]: -1 vida por erro, manutencao ao acertar, sequencia mista sem dupla) Tj
+T* (deducao, 5 cliques concorrentes \(apenas 1 desconto\), persistencia apos reload, isolamento entre contas, recuperacao) Tj
+T* (automatica 15 min + desafio e consistencia em N1/N2/focusWeakWords.) Tj
+ET
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 645.7325196850393922 Td
+(- Fim de Jogo e Recuperacao [VIDAS-01..VIDAS-10 PASS]: reducao -1 vida; gameOver imediato a 0 vidas gravando) Tj
+T* (tentativa parcial \(+15 pts, 1/6\) no historico; bloqueio de respostas/niveis a 0 vidas \(403\) e rota legada \(400\); desafio 4/5) Tj
+T* (e 5/5 \(+1 vida\); desafio <= 3/5 \(0 vidas, sem perda\); teto 5/5 e bloqueio de reenvio duplicado \(409\); reload via) Tj
+T* (/api/auth/me; isolamento cross-user \(403\); zero alteracao de pontos/niveis/attempts/wordStats no desafio; retoma) Tj
+T* (normal do Nivel 1 apos recuperar.) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.114 0.306 0.847 rg
+45.354330708661422 568.346692913385823 Td
+(6. Limitacoes Atuais) Tj
+ET
+0.89 0.91 0.94 RG
+45.354330708661422 562.6774015748030706 m
+549.9256692913385223 562.6774015748030706 l
+S
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 547.0868503937008427 Td
+(1. Ausencia de Chromium/Playwright neste contentor impede cliques reais num navegador grafico \(validacao) Tj
+T* (visual/interativa de UI confirmada por inspecao de codigo e testes HTTP\).) Tj
+ET
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 514.4884251968503577 Td
+(2. Quotas Free Tier da API Gemini \(ex.: 10 pedidos/dia em TTS\) acionam automaticamente o modelo fallback ou) Tj
+T* (reserva local/Web Speech API.) Tj
+ET
+BT
+/F1 9.6 Tf
+11.0399999999999991 TL
+0.118 0.161 0.231 rg
+45.354330708661422 481.8899999999999864 Td
+(3. Niveis 3 a 7 permanecem como roteiro arquitetural planeado para a fase P2.) Tj
+ET
+endstream
+endobj
+1 0 obj
+<</Type /Pages
+/Kids [3 0 R 5 0 R ]
+/Count 2
+>>
+endobj
+7 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+8 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+9 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+10 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+11 0 obj
+<<
+/Type /Font
+/BaseFont /Courier
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+12 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+13 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+14 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+15 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Roman
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+16 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+17 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Italic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+18 0 obj
+<<
+/Type /Font
+/BaseFont /Times-BoldItalic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+19 0 obj
+<<
+/Type /Font
+/BaseFont /ZapfDingbats
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+20 0 obj
+<<
+/Type /Font
+/BaseFont /Symbol
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+2 0 obj
+<<
+/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
+/Font <<
+/F1 7 0 R
+/F2 8 0 R
+/F3 9 0 R
+/F4 10 0 R
+/F5 11 0 R
+/F6 12 0 R
+/F7 13 0 R
+/F8 14 0 R
+/F9 15 0 R
+/F10 16 0 R
+/F11 17 0 R
+/F12 18 0 R
+/F13 19 0 R
+/F14 20 0 R
+>>
+/XObject <<
+>>
+>>
+endobj
+21 0 obj
+<<
+/Producer (jsPDF 4.2.1)
+/CreationDate (D:20261123220401-00'00')
+>>
+endobj
+22 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/OpenAction [3 0 R /FitH null]
+/PageLayout /OneColumn
+>>
+endobj
+xref
+0 23
+0000000000 65535 f 
+0000009614 00000 n 
+0000011439 00000 n 
+0000000015 00000 n 
+0000000152 00000 n 
+0000006401 00000 n 
+0000006538 00000 n 
+0000009677 00000 n 
+0000009802 00000 n 
+0000009932 00000 n 
+0000010065 00000 n 
+0000010203 00000 n 
+0000010327 00000 n 
+0000010456 00000 n 
+0000010588 00000 n 
+0000010724 00000 n 
+0000010852 00000 n 
+0000010979 00000 n 
+0000011108 00000 n 
+0000011241 00000 n 
+0000011343 00000 n 
+0000011689 00000 n 
+0000011775 00000 n 
+trailer
+<<
+/Size 23
+/Root 22 0 R
+/Info 21 0 R
+/ID [ <C32AC0F8618AE67DFFC3208B2422CA20> <C32AC0F8618AE67DFFC3208B2422CA20> ]
+>>
+startxref
+11879
+%%EOF

@@ -1,0 +1,8 @@
+{
+  "name": "LearnMatch",
+  "description": "Aplicação educativa interativa para aprendizagem de inglês através de imagens, áudio, associação visual, gamificação e Inteligência Artificial Gemini.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
