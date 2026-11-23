@@ -98,6 +98,7 @@ export const TopNav: React.FC<TopNavProps> = ({
     { view: 'levels', label: 'Níveis' },
     { view: 'history', label: 'Histórico' },
     { view: 'settings', label: 'Perfil' },
+    { view: 'documentation', label: 'Documentação' },
   ];
 
   return (

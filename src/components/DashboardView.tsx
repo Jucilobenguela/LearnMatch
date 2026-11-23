@@ -88,6 +88,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             >
               Perfil ({user.email})
             </button>
+            <span className="text-xs text-slate-300" aria-hidden="true">·</span>
+            <button
+              type="button"
+              onClick={() => onNavigate('documentation')}
+              className="text-xs font-semibold text-blue-700 hover:text-blue-900 underline underline-offset-2 cursor-pointer"
+            >
+              Documentação do Projeto
+            </button>
           </div>
           <h1 className="mt-1 text-2xl sm:text-3xl font-bold text-slate-900">
             Olá, {user.displayName || 'Estudante'}!

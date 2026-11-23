@@ -6,6 +6,7 @@ import { ExerciseSessionView } from './components/ExerciseSessionView.tsx';
 import { HistoryView } from './components/HistoryView.tsx';
 import { LandingPage } from './components/LandingPage.tsx';
 import { LevelsView } from './components/LevelsView.tsx';
+import { ProjectDocumentationView } from './components/ProjectDocumentationView.tsx';
 import { RecoveryChallengeView } from './components/RecoveryChallengeView.tsx';
 import { ResultsView } from './components/ResultsView.tsx';
 import { SettingsView } from './components/SettingsView.tsx';
@@ -526,6 +527,10 @@ export default function App() {
           onLogout={handleLogout}
           onNavigate={handleNavigate}
         />
+      )}
+
+      {view === 'documentation' && user && (
+        <ProjectDocumentationView authToken={authToken} onNavigate={handleNavigate} />
       )}
     </div>
   );

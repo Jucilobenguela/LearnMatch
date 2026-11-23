@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   AlertCircle,
   ArrowLeft,
+  BookOpen,
   CheckCircle2,
   FileDown,
   Loader2,
@@ -203,6 +204,15 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           >
             <FileDown className="w-4 h-4" aria-hidden="true" />
             Descarregar Relatório PDF
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onNavigate('documentation')}
+            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-xl hover:bg-blue-100 transition-colors cursor-pointer"
+          >
+            <BookOpen className="w-4 h-4" aria-hidden="true" />
+            Documentação do Projeto (PDF Final)
           </button>
 
           <button

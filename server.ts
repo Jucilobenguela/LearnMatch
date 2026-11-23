@@ -26,6 +26,13 @@ import {
   getOrGenerateExerciseBatch,
   getOrGenerateWordAudioResult,
 } from './server/geminiService.ts';
+import {
+  getGeneratedReportsHistory,
+  getReportPdfPathById,
+  runProjectAudit,
+  saveReportToHistory,
+} from './server/projectAuditService.ts';
+import { buildProjectFinalPdf } from './server/pdfProjectReport.ts';
 
 interface AuthenticatedRequest extends Request {
   user?: UserProfile;
@@ -546,6 +553,45 @@ export function createApp() {
     res.setHeader('X-Audio-Version', result.version);
     res.setHeader('X-Audio-Filename', result.filename);
     res.send(result.wavBuffer);
+  });
+
+  // Automatic Project Documentation: Live Audit & Versioned 15-Chapter Final PDF (0 Gemini calls)
+  app.get('/api/docs/audit', requireAuth, (_req: AuthenticatedRequest, res) => {
+    try {
+      const audit = runProjectAudit();
+      const history = getGeneratedReportsHistory();
+      res.json({ audit, history });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Erro ao executar auditoria ao projeto.';
+      res.status(500).json({ error: message });
+    }
+  });
+
+  app.post('/api/docs/generate', requireAuth, (_req: AuthenticatedRequest, res) => {
+    try {
+      const audit = runProjectAudit();
+      const { pdfBuffer, pageCount } = buildProjectFinalPdf(audit);
+      const report = saveReportToHistory(pdfBuffer, audit, pageCount);
+      const history = getGeneratedReportsHistory();
+      res.status(201).json({ report, audit, history });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Erro ao gerar relatório final em PDF.';
+      res.status(500).json({ error: message });
+    }
+  });
+
+  app.get('/api/docs/reports/:id/pdf', requireAuth, (req: AuthenticatedRequest, res) => {
+    const found = getReportPdfPathById(String(req.params.id || ''));
+    if (!found) {
+      res.status(404).json({ error: 'Relatório PDF não encontrado.' });
+      return;
+    }
+    const pdfBuffer = fs.readFileSync(found.path);
+    const disposition = req.query.download === '1' ? 'attachment' : 'inline';
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `${disposition}; filename="${found.filename}"`);
+    res.setHeader('Cache-Control', 'no-store');
+    res.send(pdfBuffer);
   });
 
   return app;

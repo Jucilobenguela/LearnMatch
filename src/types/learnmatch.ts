@@ -183,6 +183,90 @@ export interface AIRecommendation {
   createdAt: string;
 }
 
+export type ImplementationStatus =
+  | 'Implementada'
+  | 'Parcialmente implementada'
+  | 'Planeada'
+  | 'Não implementada';
+
+export interface AuditedFeature {
+  id: string;
+  name: string;
+  category: string;
+  status: ImplementationStatus;
+  evidence: string;
+  notes: string;
+}
+
+export interface AuditedEndpoint {
+  method: string;
+  path: string;
+  authRequired: boolean;
+  purpose: string;
+}
+
+export interface AuditedTestEntry {
+  id: string;
+  group: string;
+  name: string;
+  objective: string;
+  procedure: string;
+  expectedResult: string;
+  obtainedResult: string;
+  status: 'Aprovado' | 'Não executado';
+  executionMethod: string;
+}
+
+export interface GeneratedReportRecord {
+  id: string;
+  filename: string;
+  appVersion: string;
+  generatedAt: string;
+  sizeBytes: number;
+  pageCount: number;
+  implementedCount: number;
+  partialCount: number;
+  plannedCount: number;
+  notImplementedCount: number;
+}
+
+export interface ProjectDocumentationAudit {
+  appName: string;
+  appDescription: string;
+  appVersion: string;
+  auditedAt: string;
+  stack: {
+    frontend: string[];
+    backend: string[];
+    database: string;
+    aiModels: {
+      textPrimary: string;
+      textFallback: string;
+      ttsPrimary: string;
+      ttsFallback: string;
+      audioCacheVersion: string;
+    };
+  };
+  metrics: {
+    totalSourceFiles: number;
+    frontendComponentCount: number;
+    backendModuleCount: number;
+    catalogWordCount: number;
+    catalogCategories: Array<{ category: string; count: number }>;
+    cachedWavV2Count: number;
+    sqliteTables: string[];
+    implementedLevels: number[];
+    plannedLevels: number[];
+    automatedTestCount: number;
+    geminiConfigured: boolean;
+  };
+  structureSummary: Array<{ area: string; files: string[] }>;
+  features: AuditedFeature[];
+  endpoints: AuditedEndpoint[];
+  automatedTests: AuditedTestEntry[];
+  promptExtracts: Array<{ title: string; location: string; excerpt: string }>;
+}
+
 export type AppView =
   | 'landing'
   | 'register'
@@ -194,4 +278,5 @@ export type AppView =
   | 'recovery'
   | 'results'
   | 'history'
-  | 'settings';
+  | 'settings'
+  | 'documentation';

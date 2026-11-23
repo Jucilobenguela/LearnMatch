@@ -3,12 +3,17 @@ import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
 
-// Isolate test database before importing server modules
+// Isolate test database and reports directory before importing server modules
 const TEST_DB_PATH = path.resolve(process.cwd(), 'data', 'learnmatch_test.db');
+const TEST_REPORTS_DIR = path.resolve(process.cwd(), 'data', 'reports_test');
 if (fs.existsSync(TEST_DB_PATH)) {
   fs.unlinkSync(TEST_DB_PATH);
 }
+if (fs.existsSync(TEST_REPORTS_DIR)) {
+  fs.rmSync(TEST_REPORTS_DIR, { recursive: true, force: true });
+}
 process.env.LEARNMATCH_DB_PATH = TEST_DB_PATH;
+process.env.LEARNMATCH_REPORTS_DIR = TEST_REPORTS_DIR;
 
 const { createApp } = await import('../server.ts');
 const { validateExerciseQuestions } = await import('../server/catalog.ts');
@@ -963,12 +968,72 @@ await runTest('VIDAS-10', '10. Funcionalidades existentes e estado final após r
   return 'Após recuperar vidas, utilizador retomou normalmente a prática do Nível 1 (10 perguntas) preservando todo o restante MVP.';
 });
 
+// 14. Testes da Documentação Automática do Projeto e Geração PDF (15 Capítulos, sem Gemini)
+await runTest('DOC-01', 'Auditoria real do código e geração PDF local (15 capítulos, sem Gemini)', async () => {
+  const unauthAudit = await fetch(`${BASE_URL}/api/docs/audit`);
+  assert.equal(unauthAudit.status, 401);
+
+  const origKey = process.env.GEMINI_API_KEY;
+  process.env.GEMINI_API_KEY = '';
+  try {
+    const auditRes = await userA.request(BASE_URL, 'GET', '/api/docs/audit', undefined, {
+      useCookie: false,
+      useBearer: true,
+    });
+    assert.equal(auditRes.status, 200);
+    assert.equal(auditRes.data.audit.metrics.catalogWordCount, 48);
+    assert.ok(auditRes.data.audit.features.some((f: any) => f.status === 'Implementada'));
+    assert.ok(auditRes.data.audit.features.some((f: any) => f.status === 'Planeada'));
+    assert.ok(auditRes.data.audit.features.some((f: any) => f.status === 'Não implementada'));
+
+    const genRes = await userA.request(BASE_URL, 'POST', '/api/docs/generate', {}, {
+      useCookie: false,
+      useBearer: true,
+    });
+    assert.equal(genRes.status, 201);
+    const report = genRes.data.report;
+    assert.ok(report.id);
+    assert.ok(report.pageCount >= 10, `Esperado >= 10 páginas, obtido ${report.pageCount}`);
+
+    const pdfHttp = await fetch(`${BASE_URL}/api/docs/reports/${report.id}/pdf`, {
+      headers: { Authorization: `Bearer ${userA.bearerToken}` },
+    });
+    assert.equal(pdfHttp.status, 200);
+    assert.equal(pdfHttp.headers.get('content-type'), 'application/pdf');
+    const pdfBytes = Buffer.from(await pdfHttp.arrayBuffer());
+    assert.equal(pdfBytes.subarray(0, 5).toString('ascii'), '%PDF-');
+    assert.ok(pdfBytes.length > 15000);
+    return `Auditoria (48 palavras, ${auditRes.data.audit.metrics.sqliteTables.length} tabelas) e PDF (${report.pageCount} págs, ${pdfBytes.length} B) gerados sem GEMINI_API_KEY.`;
+  } finally {
+    if (origKey !== undefined) {
+      process.env.GEMINI_API_KEY = origKey;
+    } else {
+      delete process.env.GEMINI_API_KEY;
+    }
+  }
+});
+
+await runTest('DOC-02', 'Preservação de versões anteriores no manifest sem sobrescrever', async () => {
+  const secondGen = await userA.request(BASE_URL, 'POST', '/api/docs/generate', {}, {
+    useCookie: false,
+    useBearer: true,
+  });
+  assert.equal(secondGen.status, 201);
+  assert.equal(secondGen.data.history.length, 2);
+  assert.notEqual(secondGen.data.history[0].id, secondGen.data.history[1].id);
+  assert.notEqual(secondGen.data.history[0].filename, secondGen.data.history[1].filename);
+  return `Duas gerações produziram 2 ficheiros distintos preservados no manifest (${secondGen.data.history[1].id} e ${secondGen.data.history[0].id}).`;
+});
+
 console.log('\nResumo da auditoria e regressão:');
 console.log(JSON.stringify(results, null, 2));
 
 server.close();
 if (fs.existsSync(TEST_DB_PATH)) {
   fs.unlinkSync(TEST_DB_PATH);
+}
+if (fs.existsSync(TEST_REPORTS_DIR)) {
+  fs.rmSync(TEST_REPORTS_DIR, { recursive: true, force: true });
 }
 
 const failed = results.filter((r) => r.status === 'FAIL');
